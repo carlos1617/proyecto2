@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporte_de_gruas" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da7aab72-531a-4c01-a55e-29a302c6cb67">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+	 atraque."codigo_grua" AS atraque_codigo_grua1,
+     count (atraque."codigo_grua") AS atraque_codigo_grua
+FROM
+    atraque
+	group by
+	atraque_codigo_grua1
+	order by atraque_codigo_grua1 ;]]>
+	</queryString>
+	<field name="atraque_codigo_grua1" class="java.lang.String"/>
+	<field name="atraque_codigo_grua" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement x="227" y="10" width="395" height="39" uuid="c911d72a-0095-4e9b-8cfd-3bb370c89ca6"/>
+				<textElement>
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Muelle general del cantón “Manta” ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="123" y="49" width="602" height="38" uuid="78e27c7d-5cc2-48b5-bad8-798dbb626869"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Reporte del uso de las grúas en el proceso de atraque de barco, representado en cantidades]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="189" y="0" width="100" height="20" uuid="e9b7d5b7-8c07-4ca8-af88-9c6553bce062"/>
+				<text><![CDATA[Codigo de la grúa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="546" y="0" width="100" height="20" uuid="031f05d0-54a2-4a5b-8860-d5ff1356022e"/>
+				<text><![CDATA[Cantidad de uso]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="189" y="11" width="100" height="20" uuid="383fe6fa-9d5e-4c08-86ad-f7c787b93991"/>
+				<textFieldExpression><![CDATA[$F{atraque_codigo_grua1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="546" y="11" width="100" height="20" uuid="939c0c05-0931-4abd-97dd-f9f12f2a95d1"/>
+				<textFieldExpression><![CDATA[$F{atraque_codigo_grua}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="172" splitType="Stretch">
+			<barChart>
+				<chart>
+					<reportElement x="189" y="12" width="457" height="148" uuid="0cfc9201-f06e-434b-8c4d-5e3836e1c472"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{atraque_codigo_grua1}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{atraque_codigo_grua1}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{atraque_codigo_grua}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,71 @@
+---Un Cursor que muestre cuantas embarcaciones han arribado al muelle,
+--cuantos kilogramos de pesca dejaron y cuanto representa en ventas para el muelle.--
+do $$
+declare 
+	fecha_reventa record;
+		cont int;
+		ac1 int=0; ac2 int=0; ac3 int=0;
+		cur_fecha cursor for select * from reventa_pesca;
+begin
+for cont in cur_fecha loop 
+	ac1=ac1+count(cont.codigo_reventa);
+end loop;
+for cont in cur_fecha loop 
+	ac2=ac2+sum(cont.precio_reventa);
+end loop;
+for cont in cur_fecha loop 
+	ac3=ac3+sum(cont.peso_vendido);
+end loop;
+open cur_fecha;
+fetch cur_fecha into fecha_reventa;
+raise notice 'Desde la fecha: %, han atracado con pesca un total de barcos: %, con un total de ventas: %, y un total de peso: %',
+fecha_reventa.fecha_reventa, ac1, ac2, ac3;
+end $$
+language 'plpgsql'
+
+---------------------------------
+------	Un procedimiento que permita ingresar el código de un barco y muestre la cantidad que ha atracado por año.---
+create or replace function total (varchar)
+returns setof "record"
+as $body$
+select 
+codigo_barco,
+count (codigo_barco), 
+extract (year from fecha) as fecha
+from atraque
+where codigo_barco=$1
+group by  extract (year from fecha), codigo_barco;
+$body$
+language sql;
+select * from total ('b003')
+as ("codigo_barco" character varying, "número_barcos" bigint, "fecha" double precision);
+
+------	Un trigger que valide que no se pueda ingresar un número mayor de capacidad de un contenedor en cuanto a peso se refiere.---
+create or replace function validarcapacidad() returns trigger
+	as 
+		$validarcapacidad$
+	declare
+	capacidad1 int; pesopes int;
+begin
+select 
+peso_pesca into pesopes
+from pesca
+where pesca.peso_pesca = new.peso_pesca;
+select 
+capacidad into capacidad1
+from contenedor;
+		if (pesopes > capacidad1) then
+			raise exception 'sobrepasa la capacidad';
+		end if;
+	return new;
+end;
+$validarcapacidad$
+language plpgsql;
+create trigger validarcapacidad after
+insert on pesca for each row
+execute procedure validarcapacidad(); 
+insert into pesca values ('cp010','b001','co003','pescar artesanal','atun','13030');
+
+select count (codigo_barco) from atraque
+
+
